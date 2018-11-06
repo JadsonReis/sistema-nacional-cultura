@@ -432,6 +432,27 @@ def test_exibicao_historico_diligencia(url, client, login_staff):
     assert diferenca_listas == set()
 
 
+def test_historico_diligencias_componentes(client, login_staff):
+
+    sistema_cultura = mommy.make(
+        "SistemaCultura", ente_federado__cod_ibge=123456, _fill_optional=["cadastrador", "legislacao"]
+    )
+
+    diligencia = mommy.make("DiligenciaSimples")
+    sistema_cultura.legislacao.diligencia = diligencia
+    sistema_cultura.legislacao.save()
+
+    url = reverse(
+        "gestao:diligencia_geral_adicionar", kwargs={"pk": sistema_cultura.id}
+    )
+
+    request = client.get(url)
+    historico = request.context['historico_diligencias_componentes']
+
+    assert len(historico) == 1
+    assert historico[0].diligencia == diligencia
+
+
 def test_captura_nome_usuario_logado_na_diligencia(
     url, client, login_staff
 ):
