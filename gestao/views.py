@@ -807,20 +807,9 @@ class DiligenciaGeralCreateView(CreateView, TemplatedEmailFormViewMixin):
         context['sistema_cultura'] = self.get_sistema_cultura()
         context['situacoes'] = self.get_sistema_cultura().get_situacao_componentes()
         context['historico_diligencias'] = self.get_historico_diligencias()
-        context['historico_diligencias_componentes'] = self.get_historico_diligencias_componentes()
+        context['historico_diligencias_componentes'] = self.get_sistema_cultura().get_componentes_diligencias()
 
         return context
-
-    def get_historico_diligencias_componentes(self):
-        historico_diligencias_componentes = []
-        componentes = ['legislacao', 'orgao_gestor', 'plano', 'conselho', 'fundo_cultura']
-        for componente in componentes:
-            componente = getattr(self.get_sistema_cultura(), componente)
-            if componente and componente.diligencia:
-                historico_diligencias_componentes.append(componente)
-
-        return historico_diligencias_componentes
-
 
     def get_historico_diligencias(self):
         historico_diligencias = DiligenciaSimples.objects.filter(
