@@ -14,6 +14,8 @@ from gestao.models import Diligencia
 from adesao.managers import SistemaManager
 from adesao.managers import HistoricoManager
 
+from datetime import date
+
 
 LISTA_ESTADOS_PROCESSO = (
     ('0', 'Aguardando preenchimento dos dados cadastrais'),
