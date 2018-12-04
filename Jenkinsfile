@@ -19,7 +19,7 @@ pipeline {
       }
       steps {
         container('python') {
-          sh echo "teste"
+          echo "teste"
           sh "CI=true DISPLAY=:99"
           sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
