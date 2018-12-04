@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    label "jenkins-nodejs"
+    label "jenkins-python"
   }
   environment {
     ORG = 'jadsonreis'
@@ -18,9 +18,8 @@ pipeline {
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
       steps {
-        container('nodejs') {
-          sh "npm install"
-          sh "CI=true DISPLAY=:99 npm test"
+        container('python') {
+          sh "CI=true DISPLAY=:99 echo "teste"
           sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
           dir('./charts/preview') {
@@ -35,7 +34,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('nodejs') {
+        container('python') {
 
           // ensure we're not on a detached head
           sh "git checkout master"
@@ -57,7 +56,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('nodejs') {
+        container('python') {
           dir('./charts/sistema-nacional-cultura') {
             sh "jx step changelog --version v\$(cat ../../VERSION)"
 
