@@ -1,1 +1,1 @@
-# Javascript application
+# Django application
