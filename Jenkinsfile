@@ -45,8 +45,8 @@ pipeline {
           // so we can retrieve the version in later steps
           sh "echo \$(jx-release-version) > VERSION"
           sh "jx step tag --version \$(cat VERSION)"
-          sh "npm install"
-          sh "CI=true DISPLAY=:99 npm test"
+          echo "teste"
+          sh "CI=true DISPLAY=:99"
           sh "export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml"
           sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
         }
