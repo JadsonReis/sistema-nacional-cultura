@@ -1,3 +1,4 @@
 adesao/static/* linguist-vendored
+snc/static/* linguist-vendored
 snc/templates/termos/* linguist-vendored
 snc/templates/emails/* linguist-vendored
