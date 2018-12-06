@@ -1,24 +1,25 @@
+
 # -*- coding: utf-8 -*-
 """
 Django settings for snc project.
-
 For more information on this file, see
 https://docs.djangoproject.com/en/dev/topics/settings/
-
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 # from __future__ import absolute_import, unicode_literals
+from django.contrib.messages import constants as messages
 
 import environ
 
-import raven
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    SENTRY_DSN=(str, None),
     )
-
 env.read_env()
 
 ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
@@ -26,7 +27,7 @@ ROOT_DIR = environ.Path(__file__) - 2  # (/a/b/myfile.py - 3 = /)
 RECEIVER_EMAIL = env("RECEIVER_EMAIL", default="none@email.com")
 # DEBUG
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", default=False)
 
 # SECRET CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
@@ -35,7 +36,18 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default='CHANGEME!!!')
 # Allowed Hosts
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['localhost'])
 
+INTERNAL_IPS = ("127.0.0.1",)
+
 # APP CONFIGURATION
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
 DJANGO_APPS = (
     # Default Django apps:
     'django.contrib.auth',
@@ -44,6 +56,7 @@ DJANGO_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
 
     # Useful template tags:
     # 'django.contrib.humanize',
@@ -55,9 +68,7 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-    'raven.contrib.django.raven_compat',
     'localflavor',
-    'django_extensions',
     'ckeditor',
     'widget_tweaks',
     'rest_framework',
@@ -77,8 +88,17 @@ LOCAL_APPS = (
     'api',
 )
 
+# App used on development process
+DEVELOPMENT_SUPPORT_APPS = (
+    'django_extensions',
+    'debug_toolbar',
+)
+
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+if DEBUG:
+    INSTALLED_APPS = INSTALLED_APPS + DEVELOPMENT_SUPPORT_APPS
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.HalLimitOffsetPagination',
@@ -107,6 +127,9 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
+
+if DEBUG:
+    MIDDLEWARE = ('debug_toolbar.middleware.DebugToolbarMiddleware',) + MIDDLEWARE
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -319,10 +342,8 @@ CKEDITOR_CONFIGS = {
 PIWIK_SITE_ID = 1
 PIWIK_URL = ''
 
-if(DEBUG == False):
-    RAVEN_CONFIG = {
-        'dsn': env('RAVEN_DSN_URL'),
-        # If you are using git, you can also automatically configure the
-        # release based on the git info.
-        'release': raven.fetch_git_sha(str(ROOT_DIR)),
-    }
+if env("SENTRY_DSN"):
+    sentry_sdk.init(
+            dsn=env("SENTRY_DSN"),
+            integrations=[DjangoIntegration()]
+            )
