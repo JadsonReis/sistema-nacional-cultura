@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    label "jenkins-nodejs"
+    label "jenkins-python"
   }
   environment {
     ORG = 'jadsonreis'
@@ -18,7 +18,7 @@ pipeline {
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
       steps {
-        container('nodejs') {
+        container('python') {
 	  echo "teste"
           sh "CI=true DISPLAY=:99 "
           sh "export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml"
@@ -35,7 +35,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('nodejs') {
+        container('python') {
 
           // ensure we're not on a detached head
           sh "git checkout master"
@@ -57,7 +57,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('nodejs') {
+        container('python') {
           dir('./charts/sistema-nacional-cultura') {
             sh "jx step changelog --version v\$(cat ../../VERSION)"
 
