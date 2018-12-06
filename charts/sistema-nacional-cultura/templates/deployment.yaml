@@ -23,6 +23,10 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+        lifecycle:
+          postStart:
+            exec:
+              command: ["python", "/code/manage.py", "runserver 0.0.0.0:8000"]
         livenessProbe:
           httpGet:
             path: {{ .Values.probePath }}
