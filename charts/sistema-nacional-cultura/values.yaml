@@ -32,3 +32,23 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 terminationGracePeriodSeconds: 10
+
+django:
+  tier: backend
+  app: django
+  role: worker
+
+  # must be the same as gunicorn in `run_django.sh`
+  workersPort: 8000
+  # port from where djangoapp is going to be accessible
+  externalPort: 1234
+
+  djangoappImage: jadsonreis/sistema-nacional-cultura_web
+  database_url: "postgres://postgres:123456@10.1.20.89/dbsnc"
+  allowed_hosts: "*"
+  applicationPort: 8000
+
+  cpuLimit: "1"
+  cpuRequest: "0.1"
+  memoryLimit: "400Mi"
+  memoryRequest: "300Mi"
