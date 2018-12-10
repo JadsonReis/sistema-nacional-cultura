@@ -1,8 +1,9 @@
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
-  name: "{{ .Chart.Name }}"
-spec:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"spec:
   replicas: 1
   strategy:
     type: Recreate
