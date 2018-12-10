@@ -1,25 +1,19 @@
-FROM alpine:3.8
-
-LABEL maintainer LabLivre/UFABC team
-
-ARG RAVEN_DSN_URL
-ARG DEBUG
+FROM python:3.6
 
 ENV PYTHONUNBUFFERED 1
-ENV DEBUG $DEBUG
-ENV RAVEN_DSN_URL $RAVEN_DSN_URL
 
 COPY . /code/
 WORKDIR /code/
 
-RUN apk add --no-cache python3 libpq ca-certificates cairo-gobject cairo pango libffi glib jpeg && \
-	apk add --no-cache --virtual=build-dependencies python3-dev wget postgresql-dev gcc musl-dev linux-headers git libffi-dev zlib-dev jpeg-dev cairo-dev pango-dev && \
-	pip3 install pipenv && \
-	pipenv install --dev --system --deploy --ignore-pipfile && \
-	apk del build-dependencies && \
-	adduser -D -s /bin/false -u 1000 nonroot && \
-	chown -R nonroot: *
 
-EXPOSE 8000 8001
-VOLUME /code/media /code/static
-ENTRYPOINT ["uwsgi", "uwsgi.ini"]
+RUN pip install pipenv
+RUN pipenv install --system && pipenv install --dev --system
+
+RUN cp /code/env.tmpl /code/snc/.env
+RUN python /code/manage.py migrate
+RUN python /code/manage.py collectstatic --noinput
+
+
+EXPOSE 8000
+
+CMD ["python","/code/manage.py","runserver","0.0.0.0:8000"]
