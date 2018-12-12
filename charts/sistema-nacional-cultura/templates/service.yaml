@@ -11,7 +11,7 @@ spec:
       protocol: TCP
       targetPort: {{.Values.django.applicationPort }}
   selector:
-    deploymentconfig: "{{ .Chart.Name }}"
+    deploymentconfig: {{ template "fullname" . }}
   sessionAffinity: None
   type: ClusterIP
 
