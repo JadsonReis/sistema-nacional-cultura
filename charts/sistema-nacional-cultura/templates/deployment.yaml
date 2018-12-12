@@ -14,7 +14,7 @@ metadata:
       annotations:
     spec:
       containers:
-      - image: {{  .Values.django.djangoappImage }}:{{ required "Missing .Chart.appVersion" .Chart.AppVersion }}
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: djangoapp-django
         ports:
           - containerPort: 8000
