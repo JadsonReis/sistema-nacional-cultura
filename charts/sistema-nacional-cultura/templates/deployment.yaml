@@ -3,7 +3,8 @@ kind: DeploymentConfig
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"spec:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
   replicas: 1
   strategy:
     type: Recreate
