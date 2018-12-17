@@ -12,6 +12,7 @@ O cadastro do SNC é feito sobre o framework Django, usando Python3, com banco d
 As dependencias de pacotes estão no Pipfile.
 
 
+
 ## Requisitos
 
 * Python3
