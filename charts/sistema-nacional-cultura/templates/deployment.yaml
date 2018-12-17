@@ -21,6 +21,9 @@ spec:
             protocol: "TCP"
         env:
           - name: DATABASE_URL
-            value: "{{ .Values.django.database_url }}"
+            valueFrom:
+              secretKeyRef:
+                name: database-url
+                key: database-url
           - name: ALLOWED_HOSTS
             value: "{{ .Values.django.allowed_hosts }}"
