@@ -5,13 +5,12 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        name: "{{ .Chart.Name }}"
+        draft: {{ default "draft-app" .Values.draft }}
+        app: {{ template "fullname" . }}
       annotations:
     spec:
       containers:
