@@ -15,7 +15,7 @@ As dependencias de pacotes estão no Pipfile.
 
 
 
-
+R
 ## Requisitos
 
 * Python3
