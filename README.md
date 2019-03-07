@@ -12,7 +12,7 @@ Este aplicativo cadastra os entes federados e coordena o processo de adesao dess
 O cadastro do SNC é feito sobre o framework Django, usando Python3, com banco de dados PostgresSQL. É possível rodar em qualquer banco de dados, basta ajustar as settings.
 As dependencias de pacotes estão no Pipfile.
 
-I
+
 
 
 
